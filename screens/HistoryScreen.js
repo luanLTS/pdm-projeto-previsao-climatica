@@ -1,12 +1,9 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
+import HistoryComponent from "../components/HistoryComponent";
 
 const HistoryScreen = () => {
-    return (
-        <View>
-            <Text>HistoryScreen</Text>
-        </View>
-    );
+    return <HistoryComponent />;
 };
 
 export default HistoryScreen;

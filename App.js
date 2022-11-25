@@ -3,9 +3,10 @@ import { StyleSheet, Text, View } from "react-native";
 import { useEffect } from "react";
 import { getData } from "./services/OpenWeatherService";
 import SearchScreen from "./screens/SearchScreen";
+import HistoryScreen from "./screens/HistoryScreen";
 
 export default function App() {
-    return <SearchScreen />;
+    return <HistoryScreen />;
 }
 
 const styles = StyleSheet.create({

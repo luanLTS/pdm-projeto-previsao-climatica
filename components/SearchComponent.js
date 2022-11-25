@@ -1,7 +1,7 @@
 import { SafeAreaView, ScrollView, StatusBar, StyleSheet } from "react-native";
 import React, { useState } from "react";
 import { getData } from "../services/OpenWeatherService";
-import { Button, Input } from "@rneui/themed";
+import { Button, Image, Input, ListItem } from "@rneui/themed";
 import ListComponent from "./ListComponent";
 import { saveHistory } from "../services/OracleService";
 
@@ -10,6 +10,28 @@ const SearchComponent = () => {
         searchTerm: "",
         forecastList: [],
     });
+
+    function renderItem({ item }) {
+        return (
+            <ListItem>
+                <Image
+                    source={{
+                        uri: `http://openweathermap.org/img/wn/${item.icon}@4x.png`,
+                    }}
+                    containerStyle={styles.img}
+                />
+                <ListItem.Content style={styles.info}>
+                    <ListItem.Title>{item.dateTime}</ListItem.Title>
+                    <ListItem.Subtitle>
+                        Temperatura Máxima {Math.ceil(item.tempMax)} °C
+                    </ListItem.Subtitle>
+                    <ListItem.Subtitle>
+                        Temperatura Miníma {Math.ceil(item.tempMin)} °C
+                    </ListItem.Subtitle>
+                </ListItem.Content>
+            </ListItem>
+        );
+    }
 
     const onSearch = () => {
         let cidade = state.searchTerm;
@@ -46,7 +68,10 @@ const SearchComponent = () => {
                 onChangeText={(newValue) => setState({ searchTerm: newValue })}
             />
             <ScrollView>
-                <ListComponent data={state.forecastList} />
+                <ListComponent
+                    data={state.forecastList}
+                    renderItem={renderItem}
+                />
             </ScrollView>
             <Button title="Buscar previsões" onPress={onSearch} />
         </SafeAreaView>
@@ -60,5 +85,12 @@ const styles = StyleSheet.create({
         flex: 1,
         marginTop: StatusBar.currentHeight || 0,
         padding: 10,
+    },
+    img: {
+        aspectRatio: 1,
+        flex: 1,
+    },
+    info: {
+        flex: 3,
     },
 });
