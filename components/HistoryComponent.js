@@ -1,4 +1,4 @@
-import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
+import { SafeAreaView, StatusBar, StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Button, ListItem } from "@rneui/themed";
 import { getHistory } from "../services/OracleService";
@@ -11,10 +11,23 @@ const HistoryComponent = () => {
         getHistoryForecast();
     }, []);
 
+    const sortItems = (list) => {
+        list.sort((a, b) => {
+            if (a.cidade < b.cidade) {
+                return -1;
+            }
+            if (a.cidade > b.cidade) {
+                return 1;
+            }
+            return 0;
+        });
+        setHistoryForecast(list);
+    };
+
     const getHistoryForecast = () => {
         getHistory()
             .then((res) => {
-                setHistoryForecast(res.data.items);
+                sortItems(res.data.items);
             })
             .catch((err) => {
                 console.log(err);
@@ -36,17 +49,10 @@ const HistoryComponent = () => {
         );
     }
     return (
-        <View>
-            <SafeAreaView style={styles.container}>
-                <ScrollView>
-                    <ListComponent
-                        data={historyForecast}
-                        renderItem={renderItem}
-                    />
-                </ScrollView>
-                <Button onPress={getHistoryForecast} title={"Atualizar"} />
-            </SafeAreaView>
-        </View>
+        <SafeAreaView style={styles.container}>
+            <ListComponent data={historyForecast} renderItem={renderItem} />
+            <Button onPress={getHistoryForecast} title={"Atualizar"} />
+        </SafeAreaView>
     );
 };
 
@@ -61,5 +67,10 @@ const styles = StyleSheet.create({
     title: {
         flex: 1,
         textAlign: "center",
+    },
+    container: {
+        flex: 1,
+        marginTop: StatusBar.currentHeight || 0,
+        padding: 10,
     },
 });

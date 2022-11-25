@@ -1,4 +1,4 @@
-import { SafeAreaView, ScrollView, StatusBar, StyleSheet } from "react-native";
+import { SafeAreaView, StatusBar, StyleSheet } from "react-native";
 import React, { useState } from "react";
 import { getData } from "../services/OpenWeatherService";
 import { Button, Image, Input, ListItem } from "@rneui/themed";
@@ -67,12 +67,7 @@ const SearchComponent = () => {
                 value={state.searchTerm}
                 onChangeText={(newValue) => setState({ searchTerm: newValue })}
             />
-            <ScrollView>
-                <ListComponent
-                    data={state.forecastList}
-                    renderItem={renderItem}
-                />
-            </ScrollView>
+            <ListComponent data={state.forecastList} renderItem={renderItem} />
             <Button title="Buscar previsões" onPress={onSearch} />
         </SafeAreaView>
     );
