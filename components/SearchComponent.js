@@ -1,38 +1,52 @@
-import { StyleSheet, Text, View } from "react-native";
-import React, { useEffect, useState } from "react";
+import { SafeAreaView, ScrollView, StatusBar, StyleSheet } from "react-native";
+import React, { useState } from "react";
 import { getData } from "../services/OpenWeatherService";
-
 import { Button, Input } from "@rneui/themed";
+import ListComponent from "./ListComponent";
 
 const SearchComponent = () => {
     const [state, setState] = useState({
         searchTerm: "",
+        forecastList: [],
     });
 
     const onSearch = () => {
-        console.log(state.searchTerm);
         getData(state.searchTerm)
             .then((res) => {
-                console.log(res.data.list[5].main.temp_min);
-                console.log(res.data.list[5].main.temp_max);
-                console.log(res.data.list[5].weather[0].icon);
+                return res.data.list;
+            })
+            .then((list) => {
+                const filteredForecastList = list.map((forecast) => {
+                    return {
+                        tempMin: forecast.main.temp_min,
+                        tempMax: forecast.main.temp_max,
+                        icon: forecast.weather[0].icon,
+                        dateTime: forecast.dt_txt,
+                    };
+                });
+                return filteredForecastList;
+            })
+            .then((filtered) => {
+                setState({ forecastList: filtered });
             })
             .catch((err) => {
                 console.log(err);
             });
     };
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <Input
                 label={"Cidade"}
                 placeholder="Ex: Itu"
-                //tá descontrolado porque não está guardando nada, está de enfeite.
                 leftIcon={{ type: "feather", name: "search" }}
                 value={state.searchTerm}
                 onChangeText={(newValue) => setState({ searchTerm: newValue })}
             />
+            <ScrollView>
+                <ListComponent data={state.forecastList} />
+            </ScrollView>
             <Button title="Buscar previsões" onPress={onSearch} />
-        </View>
+        </SafeAreaView>
     );
 };
 
@@ -40,6 +54,8 @@ export default SearchComponent;
 
 const styles = StyleSheet.create({
     container: {
-        padding: 24,
+        flex: 1,
+        marginTop: StatusBar.currentHeight || 0,
+        padding: 10,
     },
 });
