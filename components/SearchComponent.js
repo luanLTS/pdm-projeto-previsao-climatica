@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { getData } from "../services/OpenWeatherService";
 import { Button, Input } from "@rneui/themed";
 import ListComponent from "./ListComponent";
+import { saveHistory } from "../services/OracleService";
 
 const SearchComponent = () => {
     const [state, setState] = useState({
@@ -11,7 +12,9 @@ const SearchComponent = () => {
     });
 
     const onSearch = () => {
-        getData(state.searchTerm)
+        let cidade = state.searchTerm;
+        saveHistory(cidade);
+        getData(cidade)
             .then((res) => {
                 return res.data.list;
             })
