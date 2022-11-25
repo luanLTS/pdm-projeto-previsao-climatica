@@ -1,11 +1,15 @@
-import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
-import React, { useState } from "react";
+import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
+import React, { useEffect, useState } from "react";
 import { Button, ListItem } from "@rneui/themed";
 import { getHistory } from "../services/OracleService";
 import ListComponent from "./ListComponent";
 
 const HistoryComponent = () => {
     const [historyForecast, setHistoryForecast] = useState([]);
+
+    useEffect(() => {
+        getHistoryForecast();
+    }, []);
 
     const getHistoryForecast = () => {
         getHistory()
@@ -20,10 +24,12 @@ const HistoryComponent = () => {
     function renderItem({ item }) {
         return (
             <ListItem>
-                <ListItem.Content style={styles.info}>
-                    <ListItem.Title>{item.cidade}</ListItem.Title>
-                    <ListItem.Title>
+                <ListItem.Content style={styles.item}>
+                    <ListItem.Title style={styles.title}>
                         {new Date(item.data_previso).toLocaleDateString()}
+                    </ListItem.Title>
+                    <ListItem.Title style={styles.title}>
+                        {item.cidade.toUpperCase()}
                     </ListItem.Title>
                 </ListItem.Content>
             </ListItem>
@@ -46,4 +52,14 @@ const HistoryComponent = () => {
 
 export default HistoryComponent;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+    item: {
+        flex: 1,
+        flexDirection: "row",
+        justifyContent: "center",
+    },
+    title: {
+        flex: 1,
+        textAlign: "center",
+    },
+});
